@@ -1,0 +1,132 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 16px;
+  gap: 20px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 0 0 auto;
+  min-width: 250px;
+}
+
+.toggle-btn {
+  margin-right: 8px;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-width: 200px;
+  max-width: 600px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: white;
+}
+
+.search-box input {
+  border: none;
+  background: transparent;
+  outline: none;
+  color: white;
+  width: 100%;
+  font-size: 14px;
+}
+
+.search-box input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.notification-btn,
+.theme-btn,
+.user-btn {
+  color: white;
+}
+
+.notification-btn:hover,
+.theme-btn:hover,
+.user-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.notification-menu {
+  min-width: 300px;
+}
+
+.notification-menu button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-time {
+  font-size: 12px;
+  color: #999;
+  margin-left: auto;
+}
+
+.user-menu {
+  min-width: 200px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .navbar-center {
+    display: none;
+  }
+
+  .navbar-content {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-title {
+    font-size: 16px;
+  }
+
+  .navbar-left {
+    min-width: auto;
+  }
+
+  .navbar-content {
+    padding: 0 8px;
+    gap: 4px;
+  }
+}
