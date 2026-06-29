@@ -38,6 +38,8 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from './shared/error-message/error-message.component';
+import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/signup/signup.component';
 
 // Charts
 import { NgChartsModule } from 'ng2-charts';
@@ -45,6 +47,8 @@ import { NgChartsModule } from 'ng2-charts';
 @NgModule({
   declarations: [
     AppComponent,
+    LoginComponent,
+    SignupComponent,
     NavbarComponent,
     SidebarComponent,
     LoadingSpinnerComponent,

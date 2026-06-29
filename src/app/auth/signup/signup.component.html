@@ -1,4 +1,55 @@
-<div class="signup-container">
-  <h1>Sign Up</h1>
-  <p>Signup page placeholder</p>
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <h2>Create Account</h2>
+    <p class="subtitle">Set up your account to start monitoring AI agents.</p>
+
+    <form [formGroup]="signupForm" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Full Name</mat-label>
+        <input matInput type="text" formControlName="name" autocomplete="name">
+        <mat-error *ngIf="signupForm.controls.name.touched && signupForm.controls.name.invalid">
+          Name must be at least 2 characters.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" autocomplete="email">
+        <mat-error *ngIf="signupForm.controls.email.touched && signupForm.controls.email.invalid">
+          Please enter a valid email address.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="new-password">
+        <mat-error *ngIf="signupForm.controls.password.touched && signupForm.controls.password.invalid">
+          Password must be at least 6 characters.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Confirm Password</mat-label>
+        <input matInput type="password" formControlName="confirmPassword" autocomplete="new-password">
+        <mat-error *ngIf="signupForm.controls.confirmPassword.touched && signupForm.controls.confirmPassword.invalid">
+          Confirm password is required.
+        </mat-error>
+      </mat-form-field>
+
+      <p class="error" *ngIf="signupForm.touched && signupForm.errors?.['passwordMismatch']">
+        Password and confirm password must match.
+      </p>
+
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+      <button mat-raised-button color="primary" class="full-width" type="submit" [disabled]="loading">
+        {{ loading ? 'Creating account...' : 'Create Account' }}
+      </button>
+    </form>
+
+    <p class="switch-auth">
+      Already have an account?
+      <a routerLink="/auth/login">Sign in</a>
+    </p>
+  </mat-card>
 </div>
