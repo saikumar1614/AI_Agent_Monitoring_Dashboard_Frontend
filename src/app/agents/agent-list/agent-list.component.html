@@ -1,4 +1,133 @@
-<div class="agents-container">
-  <h1>Agents</h1>
-  <p>Agents list placeholder</p>
+<div class="agent-list-container">
+  <div class="header">
+    <h2>Agents</h2>
+    <button mat-raised-button color="primary" (click)="openAddForm()" *ngIf="!showAddForm">
+      <mat-icon>add</mat-icon> Add Agent
+    </button>
+  </div>
+
+  <!-- Add/Edit Form -->
+  <mat-card *ngIf="showAddForm" class="form-card">
+    <h3>{{ editingAgentId ? 'Edit Agent' : 'Add New Agent' }}</h3>
+    <form [formGroup]="addEditForm" (ngSubmit)="submitForm()">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Agent Name</mat-label>
+          <input matInput formControlName="name" required>
+          <mat-error>Name is required (min 2 characters)</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Type</mat-label>
+          <input matInput formControlName="type" required>
+          <mat-error>Type is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="3"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Model</mat-label>
+          <input matInput formControlName="model">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Config (JSON)</mat-label>
+          <textarea matInput formControlName="config" rows="3" placeholder="{}"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit">
+          {{ editingAgentId ? 'Update Agent' : 'Create Agent' }}
+        </button>
+        <button mat-button type="button" (click)="closeForm()">Cancel</button>
+      </div>
+    </form>
+  </mat-card>
+
+  <!-- Agents Table -->
+  <div class="table-container" *ngIf="!showAddForm">
+    <mat-table [dataSource]="agents" class="agents-table">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <a routerLink="[element.id]">{{ element.name }}</a>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.type }}</mat-cell>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span class="status-badge" [ngClass]="getStatusClass(element.status)">
+            {{ element.status | uppercase }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Success Rate Column -->
+      <ng-container matColumnDef="successRate">
+        <mat-header-cell *matHeaderCellDef>Success Rate</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.successRate ? (element.successRate | number: '1.0-0') + '%' : '-' }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Execution Count Column -->
+      <ng-container matColumnDef="executionCount">
+        <mat-header-cell *matHeaderCellDef>Executions</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.executionCount || 0 }}</mat-cell>
+      </ng-container>
+
+      <!-- Average Latency Column -->
+      <ng-container matColumnDef="averageLatency">
+        <mat-header-cell *matHeaderCellDef>Avg Latency</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.averageLatency ? (element.averageLatency | number: '1.0-0') + 'ms' : '-' }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="editAgent(element)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteAgent(element)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
 </div>

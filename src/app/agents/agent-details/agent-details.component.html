@@ -1,4 +1,136 @@
-<div class="agent-details-container">
-  <h1>Agent Details</h1>
-  <p>Agent details placeholder</p>
+<div class="agent-details-container" *ngIf="!isLoading && agent; else loading">
+  <div class="header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>{{ agent.name }}</h2>
+    <div class="header-actions">
+      <button mat-icon-button (click)="editAgent()" matTooltip="Edit Agent">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteAgent()" matTooltip="Delete Agent">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="details-grid">
+    <!-- Basic Information Card -->
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>Basic Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-row">
+          <span class="label">Type:</span>
+          <span class="value">{{ agent.type }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Status:</span>
+          <span class="value">
+            <span class="status-badge" [ngClass]="getStatusClass()">
+              {{ agent.status | uppercase }}
+            </span>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="label">Model:</span>
+          <span class="value">{{ agent.model || '-' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Description:</span>
+          <span class="value">{{ agent.description || '-' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Performance Metrics Card -->
+    <mat-card class="metrics-card">
+      <mat-card-header>
+        <mat-card-title>Performance</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric">
+          <span class="metric-label">Success Rate</span>
+          <span class="metric-value">{{ agent.successRate ? (agent.successRate | number: '1.0-0') + '%' : '-' }}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Executions</span>
+          <span class="metric-value">{{ agent.executionCount || 0 }}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Avg Latency</span>
+          <span class="metric-value">{{ agent.averageLatency ? (agent.averageLatency | number: '1.0-0') + 'ms' : '-' }}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Total Cost</span>
+          <span class="metric-value">{{ agent.totalCost ? ('$' + (agent.totalCost | number: '1.0-2')) : '-' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Status Card -->
+    <mat-card class="status-card">
+      <mat-card-header>
+        <mat-card-title>Update Status</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="status-buttons">
+          <button mat-raised-button 
+            [color]="agent.status === 'active' ? 'accent' : ''"
+            (click)="updateStatus('active')">
+            Activate
+          </button>
+          <button mat-raised-button 
+            [color]="agent.status === 'paused' ? 'accent' : ''"
+            (click)="updateStatus('paused')">
+            Pause
+          </button>
+          <button mat-raised-button 
+            [color]="agent.status === 'inactive' ? 'accent' : ''"
+            (click)="updateStatus('inactive')">
+            Deactivate
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Timestamps Card -->
+    <mat-card class="timestamps-card">
+      <mat-card-header>
+        <mat-card-title>Timestamps</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-row">
+          <span class="label">Created:</span>
+          <span class="value">{{ agent.createdAt ? (agent.createdAt | date: 'short') : '-' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Updated:</span>
+          <span class="value">{{ agent.updatedAt ? (agent.updatedAt | date: 'short') : '-' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Last Run:</span>
+          <span class="value">{{ agent.lastRunAt ? (agent.lastRunAt | date: 'short') : '-' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Configuration Card -->
+    <mat-card class="config-card" *ngIf="agent.config">
+      <mat-card-header>
+        <mat-card-title>Configuration</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <pre>{{ agent.config | json }}</pre>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
+
+<ng-template #loading>
+  <div class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+</ng-template>
+

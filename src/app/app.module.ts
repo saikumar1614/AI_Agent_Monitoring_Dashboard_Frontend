@@ -28,6 +28,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Core Services and Interceptors
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
@@ -41,6 +42,10 @@ import { ErrorMessageComponent } from './shared/error-message/error-message.comp
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
 
+// Agent Components
+import { AgentListComponent } from './agents/agent-list/agent-list.component';
+import { AgentDetailsComponent } from './agents/agent-details/agent-details.component';
+
 // Charts
 import { NgChartsModule } from 'ng2-charts';
 
@@ -52,7 +57,9 @@ import { NgChartsModule } from 'ng2-charts';
     NavbarComponent,
     SidebarComponent,
     LoadingSpinnerComponent,
-    ErrorMessageComponent
+    ErrorMessageComponent,
+    AgentListComponent,
+    AgentDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -83,6 +90,7 @@ import { NgChartsModule } from 'ng2-charts';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatTooltipModule,
     
     // Charts
     NgChartsModule
