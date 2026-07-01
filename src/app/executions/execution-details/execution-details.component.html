@@ -1,4 +1,75 @@
-<div class="execution-details-container">
-  <h1>Execution Details</h1>
-  <p>Execution details placeholder</p>
+<div class="execution-details-container" *ngIf="!isLoading && execution; else loadingTemplate">
+  <div class="header">
+    <button mat-icon-button (click)="goBack()" matTooltip="Back to executions">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h2>Execution {{ execution.id }}</h2>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="retryExecution()" [disabled]="!canRetry">Retry</button>
+      <button mat-raised-button color="warn" (click)="cancelExecution()" [disabled]="!canCancel">Cancel</button>
+    </div>
+  </div>
+
+  <div class="details-grid">
+    <mat-card>
+      <mat-card-title>Execution Overview</mat-card-title>
+      <mat-card-content>
+        <div class="row"><span>ID</span><strong>{{ execution.id }}</strong></div>
+        <div class="row"><span>Agent</span><strong>{{ execution.agentName || execution.agentId }}</strong></div>
+        <div class="row">
+          <span>Status</span>
+          <strong class="status-badge" [ngClass]="getStatusClass(execution.status)">{{ execution.status | uppercase }}</strong>
+        </div>
+        <div class="row"><span>Triggered By</span><strong>{{ execution.triggeredBy || '-' }}</strong></div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>Timing</mat-card-title>
+      <mat-card-content>
+        <div class="row"><span>Started At</span><strong>{{ execution.startedAt | date:'medium' }}</strong></div>
+        <div class="row"><span>Ended At</span><strong>{{ execution.endedAt ? (execution.endedAt | date:'medium') : '-' }}</strong></div>
+        <div class="row"><span>Duration</span><strong>{{ formatDuration(execution.durationMs) }}</strong></div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>Token Usage</mat-card-title>
+      <mat-card-content>
+        <div class="row"><span>Input Tokens</span><strong>{{ execution.tokensInput || 0 }}</strong></div>
+        <div class="row"><span>Output Tokens</span><strong>{{ execution.tokensOutput || 0 }}</strong></div>
+        <div class="row"><span>Total Tokens</span><strong>{{ execution.totalTokens || 0 }}</strong></div>
+        <div class="row"><span>Cost</span><strong>{{ execution.cost != null ? ('$' + (execution.cost | number:'1.2-4')) : '-' }}</strong></div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="execution.errorMessage">
+      <mat-card-title>Error</mat-card-title>
+      <mat-card-content>
+        <div class="error-box">{{ execution.errorMessage }}</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card class="logs-card">
+    <mat-card-title>Execution Logs</mat-card-title>
+    <mat-card-content>
+      <div class="log-list" *ngIf="logs.length; else emptyLogs">
+        <div class="log-line" *ngFor="let log of logs">
+          <span class="log-time">{{ log.timestamp | date:'shortTime' }}</span>
+          <span class="log-level" [ngClass]="'level-' + log.level">{{ log.level | uppercase }}</span>
+          <span class="log-message">{{ log.message }}</span>
+        </div>
+      </div>
+      <ng-template #emptyLogs>
+        <div class="empty-state">No logs available for this execution.</div>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
 </div>
+
+<ng-template #loadingTemplate>
+  <div class="loading">
+    <mat-spinner diameter="42"></mat-spinner>
+  </div>
+</ng-template>

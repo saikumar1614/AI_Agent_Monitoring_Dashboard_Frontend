@@ -1,0 +1,84 @@
+.executions-container {
+	padding: 20px;
+}
+
+.header {
+	margin-bottom: 16px;
+}
+
+.header h2 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.filters-card,
+.table-card {
+	margin-bottom: 16px;
+}
+
+.filters-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 12px;
+	align-items: end;
+}
+
+.filter-actions {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.table-wrapper {
+	overflow-x: auto;
+}
+
+.executions-table {
+	width: 100%;
+}
+
+.status-badge {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.status-queued {
+	background: #eceff1;
+	color: #455a64;
+}
+
+.status-running {
+	background: #e3f2fd;
+	color: #1565c0;
+}
+
+.status-completed {
+	background: #e8f5e9;
+	color: #2e7d32;
+}
+
+.status-failed {
+	background: #ffebee;
+	color: #c62828;
+}
+
+.status-cancelled {
+	background: #fff3e0;
+	color: #ef6c00;
+}
+
+.loading {
+	display: flex;
+	justify-content: center;
+	padding: 24px;
+}
+
+@media (max-width: 768px) {
+	.executions-container {
+		padding: 12px;
+	}
+}

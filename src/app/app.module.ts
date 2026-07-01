@@ -45,6 +45,8 @@ import { SignupComponent } from './auth/signup/signup.component';
 // Agent Components
 import { AgentListComponent } from './agents/agent-list/agent-list.component';
 import { AgentDetailsComponent } from './agents/agent-details/agent-details.component';
+import { ExecutionListComponent } from './executions/execution-list/execution-list.component';
+import { ExecutionDetailsComponent } from './executions/execution-details/execution-details.component';
 
 // Charts
 import { NgChartsModule } from 'ng2-charts';
@@ -59,7 +61,9 @@ import { NgChartsModule } from 'ng2-charts';
     LoadingSpinnerComponent,
     ErrorMessageComponent,
     AgentListComponent,
-    AgentDetailsComponent
+    AgentDetailsComponent,
+    ExecutionListComponent,
+    ExecutionDetailsComponent
   ],
   imports: [
     BrowserModule,
