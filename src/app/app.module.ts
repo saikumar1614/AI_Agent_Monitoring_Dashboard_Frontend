@@ -47,6 +47,8 @@ import { AgentListComponent } from './agents/agent-list/agent-list.component';
 import { AgentDetailsComponent } from './agents/agent-details/agent-details.component';
 import { ExecutionListComponent } from './executions/execution-list/execution-list.component';
 import { ExecutionDetailsComponent } from './executions/execution-details/execution-details.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { KpiCardComponent } from './dashboard/components/kpi-card/kpi-card.component';
 
 // Charts
 import { NgChartsModule } from 'ng2-charts';
@@ -63,7 +65,9 @@ import { NgChartsModule } from 'ng2-charts';
     AgentListComponent,
     AgentDetailsComponent,
     ExecutionListComponent,
-    ExecutionDetailsComponent
+    ExecutionDetailsComponent,
+    DashboardComponent,
+    KpiCardComponent
   ],
   imports: [
     BrowserModule,

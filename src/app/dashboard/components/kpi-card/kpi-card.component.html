@@ -1,0 +1,17 @@
+<mat-card class="kpi-card" [style.--accent]="accent">
+  <div class="kpi-header">
+    <div>
+      <p class="kpi-title">{{ title }}</p>
+      <h3 class="kpi-value">{{ value }}</h3>
+      <p class="kpi-subtitle">{{ subtitle }}</p>
+    </div>
+    <div class="kpi-icon-wrap">
+      <mat-icon>{{ icon }}</mat-icon>
+    </div>
+  </div>
+
+  <div class="kpi-footer" [ngClass]="'trend-' + trend">
+    <mat-icon>{{ trendIcon }}</mat-icon>
+    <span>{{ change }}</span>
+  </div>
+</mat-card>
