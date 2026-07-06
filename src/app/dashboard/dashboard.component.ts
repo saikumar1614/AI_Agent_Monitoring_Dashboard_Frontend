@@ -1,5 +1,17 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration } from 'chart.js';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  DashboardAlert,
+  DashboardKpi,
+  DashboardMetrics,
+  DashboardOverview,
+  DashboardRecentActivity,
+  DashboardRecentExecution
+} from '../core/models/dashboard.model';
+import { DashboardService } from '../core/services/dashboard.service';
 
 interface KpiCard {
   title: string;
@@ -11,30 +23,18 @@ interface KpiCard {
   subtitle: string;
 }
 
-interface RecentExecution {
-  id: string;
-  agentName: string;
-  status: 'completed' | 'failed' | 'running' | 'queued';
-  duration: string;
-  timeAgo: string;
-}
-
-interface AlertItem {
-  severity: 'high' | 'medium' | 'low';
-  title: string;
-  description: string;
-  timestamp: string;
-}
-
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   readonly currentDate = new Date();
+  isLoading = false;
+  loadError = false;
+  readonly selectedTimeRange = '24h';
 
-  readonly kpiCards: KpiCard[] = [
+  kpiCards: KpiCard[] = [
     {
       title: 'Total Executions',
       value: '12,840',
@@ -73,7 +73,7 @@ export class DashboardComponent {
     }
   ];
 
-  readonly recentExecutions: RecentExecution[] = [
+  recentExecutions: DashboardRecentExecution[] = [
     { id: 'exec_98412', agentName: 'Fraud Guard', status: 'completed', duration: '0.9 s', timeAgo: '2 min ago' },
     { id: 'exec_98411', agentName: 'Catalog Copilot', status: 'running', duration: '1.4 s', timeAgo: '5 min ago' },
     { id: 'exec_98410', agentName: 'Support Summarizer', status: 'failed', duration: '0.3 s', timeAgo: '8 min ago' },
@@ -81,7 +81,7 @@ export class DashboardComponent {
     { id: 'exec_98408', agentName: 'Sentiment Scout', status: 'queued', duration: '-', timeAgo: '19 min ago' }
   ];
 
-  readonly alerts: AlertItem[] = [
+  alerts: DashboardAlert[] = [
     {
       severity: 'high',
       title: 'Spike in failed executions',
@@ -102,7 +102,7 @@ export class DashboardComponent {
     }
   ];
 
-  readonly statusDistributionData: ChartConfiguration<'doughnut'>['data'] = {
+  statusDistributionData: ChartConfiguration<'doughnut'>['data'] = {
     labels: ['Completed', 'Running', 'Failed', 'Queued'],
     datasets: [
       {
@@ -122,7 +122,7 @@ export class DashboardComponent {
     cutout: '62%'
   };
 
-  readonly latencyTrendData: ChartConfiguration<'line'>['data'] = {
+  latencyTrendData: ChartConfiguration<'line'>['data'] = {
     labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
     datasets: [
       {
@@ -150,7 +150,7 @@ export class DashboardComponent {
     }
   };
 
-  readonly costByAgentData: ChartConfiguration<'bar'>['data'] = {
+  costByAgentData: ChartConfiguration<'bar'>['data'] = {
     labels: ['Fraud Guard', 'Catalog Copilot', 'Support Summarizer', 'Invoice Assistant'],
     datasets: [
       {
@@ -175,11 +175,196 @@ export class DashboardComponent {
     }
   };
 
+  constructor(
+    private dashboardService: DashboardService,
+    private snackBar: MatSnackBar
+  ) {}
+
+  ngOnInit(): void {
+    this.loadDashboardData();
+  }
+
+  refreshDashboard(): void {
+    this.loadDashboardData(true);
+  }
+
   getExecutionStatusClass(status: string): string {
     return `status-${status}`;
   }
 
   getAlertSeverityClass(severity: string): string {
     return `severity-${severity}`;
+  }
+
+  getExecutionDuration(execution: DashboardRecentExecution): string {
+    if (execution.duration) {
+      return execution.duration;
+    }
+
+    if (execution.durationMs == null) {
+      return '-';
+    }
+
+    if (execution.durationMs < 1000) {
+      return `${execution.durationMs} ms`;
+    }
+
+    return `${(execution.durationMs / 1000).toFixed(1)} s`;
+  }
+
+  private loadDashboardData(showMessage: boolean = false): void {
+    this.isLoading = true;
+    this.loadError = false;
+
+    forkJoin({
+      overview: this.dashboardService.getOverview(this.selectedTimeRange).pipe(catchError(() => of(null))),
+      metrics: this.dashboardService.getMetrics(this.selectedTimeRange).pipe(catchError(() => of(null))),
+      recentActivity: this.dashboardService.getRecentActivity(6).pipe(catchError(() => of(null)))
+    }).subscribe({
+      next: ({ overview, metrics, recentActivity }) => {
+        const normalizedOverview = this.extractPayload<DashboardOverview>(overview);
+        const normalizedMetrics = this.extractPayload<DashboardMetrics>(metrics);
+        const normalizedRecent = this.extractPayload<DashboardRecentActivity>(recentActivity);
+
+        if (normalizedOverview) {
+          this.applyOverview(normalizedOverview);
+        }
+
+        if (normalizedMetrics) {
+          this.applyMetrics(normalizedMetrics);
+        }
+
+        if (normalizedRecent) {
+          this.applyRecentActivity(normalizedRecent);
+        }
+
+        if (!normalizedOverview && !normalizedMetrics && !normalizedRecent) {
+          this.loadError = true;
+          this.snackBar.open('Dashboard data unavailable. Showing fallback values.', 'Close', { duration: 4000 });
+        } else if (showMessage) {
+          this.snackBar.open('Dashboard refreshed', 'Close', { duration: 2500 });
+        }
+
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.loadError = true;
+        this.snackBar.open('Failed to refresh dashboard data', 'Close', { duration: 4000 });
+      }
+    });
+  }
+
+  private applyOverview(overview: DashboardOverview): void {
+    if (Array.isArray(overview.kpis) && overview.kpis.length) {
+      this.kpiCards = this.mapKpis(overview.kpis);
+    }
+
+    if (overview.statusDistribution) {
+      const dist = overview.statusDistribution;
+      this.statusDistributionData = {
+        ...this.statusDistributionData,
+        datasets: [
+          {
+            ...this.statusDistributionData.datasets[0],
+            data: [dist.completed || 0, dist.running || 0, dist.failed || 0, dist.queued || 0]
+          }
+        ]
+      };
+    }
+
+    if (Array.isArray(overview.alerts) && overview.alerts.length) {
+      this.alerts = overview.alerts;
+    }
+  }
+
+  private applyMetrics(metrics: DashboardMetrics): void {
+    if (Array.isArray(metrics.latencyTrend) && metrics.latencyTrend.length) {
+      this.latencyTrendData = {
+        ...this.latencyTrendData,
+        labels: metrics.latencyTrend.map((point) => point.label),
+        datasets: [
+          {
+            ...this.latencyTrendData.datasets[0],
+            data: metrics.latencyTrend.map((point) => point.p95 || 0)
+          }
+        ]
+      };
+    }
+
+    if (Array.isArray(metrics.costByAgent) && metrics.costByAgent.length) {
+      this.costByAgentData = {
+        ...this.costByAgentData,
+        labels: metrics.costByAgent.map((point) => point.agentName),
+        datasets: [
+          {
+            ...this.costByAgentData.datasets[0],
+            data: metrics.costByAgent.map((point) => point.cost || 0)
+          }
+        ]
+      };
+    }
+  }
+
+  private applyRecentActivity(recent: DashboardRecentActivity): void {
+    if (Array.isArray(recent.executions) && recent.executions.length) {
+      this.recentExecutions = recent.executions;
+    }
+
+    if (Array.isArray(recent.alerts) && recent.alerts.length) {
+      this.alerts = recent.alerts;
+    }
+  }
+
+  private mapKpis(kpis: DashboardKpi[]): KpiCard[] {
+    const config: Record<DashboardKpi['key'], { title: string; icon: string; accent: string; unit?: string; subtitle: string }> = {
+      totalExecutions: { title: 'Total Executions', icon: 'play_circle', accent: '#1d4ed8', subtitle: 'Across all agents' },
+      successRate: { title: 'Success Rate', icon: 'verified', accent: '#0f766e', unit: '%', subtitle: '24h execution window' },
+      avgLatencyMs: { title: 'Avg Latency', icon: 'speed', accent: '#8b5cf6', unit: ' ms', subtitle: 'P95 response duration' },
+      dailyCost: { title: 'Daily Cost', icon: 'payments', accent: '#b45309', unit: '$', subtitle: 'Token + tool usage' }
+    };
+
+    return kpis
+      .filter((kpi) => !!config[kpi.key])
+      .map((kpi) => {
+        const kpiConfig = config[kpi.key];
+        const trend: 'up' | 'down' | 'neutral' = kpi.change > 0 ? 'up' : (kpi.change < 0 ? 'down' : 'neutral');
+        const absChange = Math.abs(kpi.change).toFixed(1);
+        const changeLabel = `${kpi.change >= 0 ? '+' : '-'}${absChange}% vs previous period`;
+
+        let value = String(kpi.value);
+        if (kpi.key === 'dailyCost') {
+          value = `$${kpi.value.toFixed(2)}`;
+        } else if (kpiConfig.unit === '%') {
+          value = `${kpi.value.toFixed(1)}%`;
+        } else if (kpiConfig.unit === ' ms') {
+          value = `${Math.round(kpi.value)} ms`;
+        } else {
+          value = Math.round(kpi.value).toLocaleString();
+        }
+
+        return {
+          title: kpiConfig.title,
+          value,
+          change: changeLabel,
+          trend,
+          icon: kpiConfig.icon,
+          accent: kpiConfig.accent,
+          subtitle: kpi.subtitle || kpiConfig.subtitle
+        };
+      });
+  }
+
+  private extractPayload<T>(response: unknown): T | null {
+    if (!response) {
+      return null;
+    }
+
+    const asObject = response as Record<string, unknown>;
+    if (asObject['data']) {
+      return asObject['data'] as T;
+    }
+
+    return response as T;
   }
 }

@@ -11,7 +11,18 @@
       <mat-icon>calendar_month</mat-icon>
       <span>{{ currentDate | date:'EEEE, MMM d, y' }}</span>
     </div>
+    <button mat-stroked-button class="refresh-btn" (click)="refreshDashboard()" [disabled]="isLoading">
+      <mat-icon>refresh</mat-icon>
+      Refresh Data
+    </button>
   </section>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <mat-card class="error-banner" *ngIf="loadError">
+    <mat-icon>warning</mat-icon>
+    <span>Unable to fetch latest dashboard data. Displaying fallback values.</span>
+  </mat-card>
 
   <section class="kpi-grid">
     <app-kpi-card
@@ -63,7 +74,7 @@
             <p class="execution-agent">{{ execution.agentName }}</p>
           </div>
           <span class="status-chip" [ngClass]="getExecutionStatusClass(execution.status)">{{ execution.status }}</span>
-          <p class="execution-duration">{{ execution.duration }}</p>
+          <p class="execution-duration">{{ getExecutionDuration(execution) }}</p>
           <p class="execution-time">{{ execution.timeAgo }}</p>
         </div>
       </div>
