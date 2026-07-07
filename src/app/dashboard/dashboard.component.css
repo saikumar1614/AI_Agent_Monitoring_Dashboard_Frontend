@@ -81,6 +81,59 @@
 	gap: 14px;
 }
 
+.summary-grid {
+	margin-top: 12px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 12px;
+}
+
+.summary-card {
+	border-radius: 14px;
+	border: 1px solid #dbe7f2;
+	box-shadow: 0 8px 18px rgba(30, 41, 59, 0.06);
+	padding: 14px;
+}
+
+.summary-title {
+	margin: 0;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #546e7a;
+}
+
+.summary-value {
+	margin: 8px 0 6px;
+	font-size: 24px;
+	line-height: 1.15;
+	color: #0f172a;
+	font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+}
+
+.summary-hint {
+	margin: 0;
+	font-size: 12px;
+	color: #64748b;
+}
+
+.tone-good {
+	border-left: 4px solid #2e7d32;
+}
+
+.tone-warn {
+	border-left: 4px solid #ef6c00;
+}
+
+.tone-danger {
+	border-left: 4px solid #c62828;
+}
+
+.tone-info {
+	border-left: 4px solid #1565c0;
+}
+
 .widget-grid {
 	margin-top: 16px;
 	display: grid;

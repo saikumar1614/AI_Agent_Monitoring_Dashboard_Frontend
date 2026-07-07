@@ -37,6 +37,14 @@
     </app-kpi-card>
   </section>
 
+  <section class="summary-grid">
+    <mat-card class="summary-card" *ngFor="let item of summaryItems" [ngClass]="'tone-' + item.tone">
+      <p class="summary-title">{{ item.title }}</p>
+      <h3 class="summary-value">{{ item.value }}</h3>
+      <p class="summary-hint">{{ item.hint }}</p>
+    </mat-card>
+  </section>
+
   <section class="widget-grid">
     <mat-card class="widget wide">
       <div class="widget-header">

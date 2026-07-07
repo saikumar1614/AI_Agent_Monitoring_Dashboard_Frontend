@@ -23,6 +23,13 @@ interface KpiCard {
   subtitle: string;
 }
 
+interface DashboardSummaryItem {
+  title: string;
+  value: string;
+  hint: string;
+  tone: 'good' | 'warn' | 'danger' | 'info';
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -71,6 +78,13 @@ export class DashboardComponent implements OnInit {
       accent: '#b45309',
       subtitle: 'Token + tool usage'
     }
+  ];
+
+  summaryItems: DashboardSummaryItem[] = [
+    { title: 'Active Queue', value: '16', hint: 'Running + queued executions', tone: 'info' },
+    { title: 'Failure Ratio', value: '6.0%', hint: 'Current execution failure rate', tone: 'warn' },
+    { title: 'Open Alerts', value: '3', hint: 'Monitoring alerts requiring review', tone: 'danger' },
+    { title: 'Top Cost Agent', value: 'Fraud Guard', hint: '$108 highest spend today', tone: 'good' }
   ];
 
   recentExecutions: DashboardRecentExecution[] = [
@@ -262,6 +276,7 @@ export class DashboardComponent implements OnInit {
 
     if (overview.statusDistribution) {
       const dist = overview.statusDistribution;
+      this.updateSummaryFromStatus(dist.completed || 0, dist.running || 0, dist.failed || 0, dist.queued || 0);
       this.statusDistributionData = {
         ...this.statusDistributionData,
         datasets: [
@@ -275,6 +290,7 @@ export class DashboardComponent implements OnInit {
 
     if (Array.isArray(overview.alerts) && overview.alerts.length) {
       this.alerts = overview.alerts;
+      this.updateSummaryAlerts(overview.alerts.length);
     }
   }
 
@@ -293,6 +309,10 @@ export class DashboardComponent implements OnInit {
     }
 
     if (Array.isArray(metrics.costByAgent) && metrics.costByAgent.length) {
+      this.updateSummaryTopCost(metrics.costByAgent.map((point) => ({
+        agentName: point.agentName,
+        cost: point.cost || 0
+      })));
       this.costByAgentData = {
         ...this.costByAgentData,
         labels: metrics.costByAgent.map((point) => point.agentName),
@@ -313,7 +333,30 @@ export class DashboardComponent implements OnInit {
 
     if (Array.isArray(recent.alerts) && recent.alerts.length) {
       this.alerts = recent.alerts;
+      this.updateSummaryAlerts(recent.alerts.length);
     }
+  }
+
+  private updateSummaryFromStatus(completed: number, running: number, failed: number, queued: number): void {
+    const total = completed + running + failed + queued;
+    const failureRatio = total > 0 ? ((failed / total) * 100) : 0;
+    const queue = running + queued;
+
+    this.setSummaryValue('Active Queue', String(queue), 'Running + queued executions');
+    this.setSummaryValue('Failure Ratio', `${failureRatio.toFixed(1)}%`, 'Current execution failure rate');
+  }
+
+  private updateSummaryAlerts(alertCount: number): void {
+    this.setSummaryValue('Open Alerts', String(alertCount), 'Monitoring alerts requiring review');
+  }
+
+  private updateSummaryTopCost(points: Array<{ agentName: string; cost: number }>): void {
+    const top = points.reduce((prev, curr) => curr.cost > prev.cost ? curr : prev, points[0]);
+    this.setSummaryValue('Top Cost Agent', top.agentName, `$${top.cost.toFixed(2)} highest spend today`);
+  }
+
+  private setSummaryValue(title: string, value: string, hint: string): void {
+    this.summaryItems = this.summaryItems.map((item) => item.title === title ? { ...item, value, hint } : item);
   }
 
   private mapKpis(kpis: DashboardKpi[]): KpiCard[] {
