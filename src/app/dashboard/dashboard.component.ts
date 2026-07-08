@@ -1,6 +1,6 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChartConfiguration } from 'chart.js';
-import { forkJoin, of } from 'rxjs';
+import { Subscription, forkJoin, interval, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
@@ -35,11 +35,20 @@ interface DashboardSummaryItem {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   readonly currentDate = new Date();
   isLoading = false;
   loadError = false;
   readonly selectedTimeRange = '24h';
+  autoRefreshEnabled = true;
+  lastUpdated: Date | null = null;
+  readonly refreshIntervalOptions: Array<{ label: string; value: number }> = [
+    { label: '10 sec', value: 10000 },
+    { label: '30 sec', value: 30000 },
+    { label: '60 sec', value: 60000 }
+  ];
+  selectedRefreshIntervalMs = 30000;
+  private refreshSubscription: Subscription | null = null;
 
   kpiCards: KpiCard[] = [
     {
@@ -196,10 +205,36 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboardData();
+    this.startAutoRefresh();
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoRefresh();
   }
 
   refreshDashboard(): void {
     this.loadDashboardData(true);
+  }
+
+  onAutoRefreshToggle(enabled: boolean): void {
+    this.autoRefreshEnabled = enabled;
+
+    if (enabled) {
+      this.startAutoRefresh();
+      this.snackBar.open('Auto refresh enabled', 'Close', { duration: 2000 });
+      return;
+    }
+
+    this.stopAutoRefresh();
+    this.snackBar.open('Auto refresh paused', 'Close', { duration: 2000 });
+  }
+
+  onRefreshIntervalChange(value: number): void {
+    this.selectedRefreshIntervalMs = value;
+
+    if (this.autoRefreshEnabled) {
+      this.startAutoRefresh();
+    }
   }
 
   getExecutionStatusClass(status: string): string {
@@ -226,8 +261,10 @@ export class DashboardComponent implements OnInit {
     return `${(execution.durationMs / 1000).toFixed(1)} s`;
   }
 
-  private loadDashboardData(showMessage: boolean = false): void {
-    this.isLoading = true;
+  private loadDashboardData(showMessage: boolean = false, fromAutoRefresh: boolean = false): void {
+    if (!fromAutoRefresh) {
+      this.isLoading = true;
+    }
     this.loadError = false;
 
     forkJoin({
@@ -254,19 +291,41 @@ export class DashboardComponent implements OnInit {
 
         if (!normalizedOverview && !normalizedMetrics && !normalizedRecent) {
           this.loadError = true;
-          this.snackBar.open('Dashboard data unavailable. Showing fallback values.', 'Close', { duration: 4000 });
+          if (!fromAutoRefresh) {
+            this.snackBar.open('Dashboard data unavailable. Showing fallback values.', 'Close', { duration: 4000 });
+          }
         } else if (showMessage) {
           this.snackBar.open('Dashboard refreshed', 'Close', { duration: 2500 });
         }
 
+        this.lastUpdated = new Date();
         this.isLoading = false;
       },
       error: () => {
         this.isLoading = false;
         this.loadError = true;
-        this.snackBar.open('Failed to refresh dashboard data', 'Close', { duration: 4000 });
+        if (!fromAutoRefresh) {
+          this.snackBar.open('Failed to refresh dashboard data', 'Close', { duration: 4000 });
+        }
       }
     });
+  }
+
+  private startAutoRefresh(): void {
+    this.stopAutoRefresh();
+
+    this.refreshSubscription = interval(this.selectedRefreshIntervalMs).subscribe(() => {
+      if (this.autoRefreshEnabled) {
+        this.loadDashboardData(false, true);
+      }
+    });
+  }
+
+  private stopAutoRefresh(): void {
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+      this.refreshSubscription = null;
+    }
   }
 
   private applyOverview(overview: DashboardOverview): void {

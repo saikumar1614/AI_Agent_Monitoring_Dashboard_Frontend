@@ -29,6 +29,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 // Core Services and Interceptors
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
@@ -99,6 +100,7 @@ import { NgChartsModule } from 'ng2-charts';
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
+    MatSlideToggleModule,
     
     // Charts
     NgChartsModule

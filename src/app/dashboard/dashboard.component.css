@@ -53,6 +53,37 @@
 	font-weight: 600;
 }
 
+.live-controls {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	padding: 10px 12px;
+	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(186, 230, 253, 0.2);
+}
+
+.interval-field {
+	width: 120px;
+	margin: 0;
+}
+
+.interval-field ::ng-deep .mat-mdc-text-field-wrapper {
+	background: rgba(255, 255, 255, 0.08);
+	border-radius: 10px;
+}
+
+.interval-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+	display: none;
+}
+
+.last-updated {
+	font-size: 12px;
+	font-weight: 600;
+	color: #bae6fd;
+}
+
 .refresh-btn {
 	align-self: flex-start;
 	border-color: rgba(186, 230, 253, 0.6) !important;
@@ -295,5 +326,9 @@
 
 	.execution-item {
 		grid-template-columns: 1fr;
+	}
+
+	.live-controls {
+		width: 100%;
 	}
 }

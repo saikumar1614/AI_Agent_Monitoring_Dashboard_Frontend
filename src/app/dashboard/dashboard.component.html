@@ -11,6 +11,25 @@
       <mat-icon>calendar_month</mat-icon>
       <span>{{ currentDate | date:'EEEE, MMM d, y' }}</span>
     </div>
+    <div class="live-controls">
+      <mat-slide-toggle
+        color="primary"
+        [checked]="autoRefreshEnabled"
+        (change)="onAutoRefreshToggle($event.checked)">
+        Auto Refresh
+      </mat-slide-toggle>
+
+      <mat-form-field appearance="outline" class="interval-field">
+        <mat-label>Interval</mat-label>
+        <mat-select [value]="selectedRefreshIntervalMs" (selectionChange)="onRefreshIntervalChange($event.value)">
+          <mat-option *ngFor="let option of refreshIntervalOptions" [value]="option.value">{{ option.label }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <span class="last-updated" *ngIf="lastUpdated">
+        Last update: {{ lastUpdated | date:'shortTime' }}
+      </span>
+    </div>
     <button mat-stroked-button class="refresh-btn" (click)="refreshDashboard()" [disabled]="isLoading">
       <mat-icon>refresh</mat-icon>
       Refresh Data
