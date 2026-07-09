@@ -1,4 +1,114 @@
-<div class="tool-usage-container">
-  <h1>Tool Usage</h1>
-  <p>Tool usage list placeholder</p>
+<div class="page-container">
+  <div class="page-header">
+    <h1>Tool Usage Analytics</h1>
+    <p>Track tool invocations, performance, and costs across agents</p>
+  </div>
+
+  <mat-card class="filters-card">
+    <form [formGroup]="filterForm">
+      <div class="filter-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Tool Name</mat-label>
+          <input matInput formControlName="toolName" placeholder="Search by tool name">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Category</mat-label>
+          <input matInput formControlName="category" placeholder="Filter by category">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Agent ID</mat-label>
+          <input matInput formControlName="agentId" placeholder="Filter by agent">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput formControlName="fromDate" type="date">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput formControlName="toDate" type="date">
+        </mat-form-field>
+      </div>
+
+      <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="onFilterApply()">
+          <mat-icon>search</mat-icon> Apply Filters
+        </button>
+        <button mat-stroked-button (click)="onFilterReset()">
+          <mat-icon>refresh</mat-icon> Reset
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <mat-card class="table-card">
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="toolUsages" class="tool-table">
+        <ng-container matColumnDef="toolName">
+          <th mat-header-cell *matHeaderCellDef>Tool Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.toolName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let element">{{ element.category }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="agentName">
+          <th mat-header-cell *matHeaderCellDef>Agent</th>
+          <td mat-cell *matCellDef="let element">{{ element.agentName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="callCount">
+          <th mat-header-cell *matHeaderCellDef>Calls</th>
+          <td mat-cell *matCellDef="let element">{{ element.callCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="successCount">
+          <th mat-header-cell *matHeaderCellDef>Success</th>
+          <td mat-cell *matCellDef="let element">{{ element.successCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="failureCount">
+          <th mat-header-cell *matHeaderCellDef>Failures</th>
+          <td mat-cell *matCellDef="let element"><span class="failure-count">{{ element.failureCount }}</span></td>
+        </ng-container>
+
+        <ng-container matColumnDef="avgDurationMs">
+          <th mat-header-cell *matHeaderCellDef>Avg Duration</th>
+          <td mat-cell *matCellDef="let element">{{ element.avgDurationMs | number: '1.0-0' }} ms</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalCost">
+          <th mat-header-cell *matHeaderCellDef>Total Cost</th>
+          <td mat-cell *matCellDef="let element">${{ element.totalCost | number: '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button (click)="viewDetails(element.id)" matTooltip="View Details">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      (page)="onPageChange($event.pageIndex)"
+      (pageSizeChange)="onPageSizeChange($event.pageSize)">
+    </mat-paginator>
+  </mat-card>
 </div>

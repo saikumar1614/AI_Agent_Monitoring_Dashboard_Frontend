@@ -32,12 +32,12 @@ const routes: Routes = [
   {
     path: 'tool-usage',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./tool-usage/tool-usage-routing.module').then(m => m.ToolUsageRoutingModule)
+    loadChildren: () => import('./tool-usage/tool-usage.module').then(m => m.ToolUsageModule)
   },
   {
     path: 'failures',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./failures/failures-routing.module').then(m => m.FailuresRoutingModule)
+    loadChildren: () => import('./failures/failures.module').then(m => m.FailuresModule)
   },
   {
     path: 'analytics',

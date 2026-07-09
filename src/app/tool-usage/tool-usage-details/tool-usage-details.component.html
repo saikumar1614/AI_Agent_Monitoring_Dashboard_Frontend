@@ -1,4 +1,30 @@
-<div class="tool-usage-details-container">
-  <h1>Tool Usage Details</h1>
-  <p>Tool usage details placeholder</p>
-</div>
+<div class="page-container" *ngIf="toolUsage; else loading">
+  <button mat-icon-button (click)="goBack()" class="back-button">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  <div class="tool-header">
+    <h1>{{ toolUsage.toolName }}</h1>
+    <p class="tool-category">{{ toolUsage.category }}</p>
+  </div>
+
+  <div class="metrics-grid">
+    <mat-card class="metric-card">
+      <h3>Invocations</h3>
+      <div class="metric-value">{{ toolUsage.callCount }}</div>
+      <p class="metric-subtitle">Total calls</p>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <h3>Success Rate</h3>
+      <div class="metric-value">{{ getSuccessRate() | number: '1.1-1' }}%</div>
+      <p class="metric-subtitle">{{ toolUsage.successCount }} successful, {{ toolUsage.failureCount }} failed</p>
+    </mat-card>
+
+    <mat-card class="metric-card">
+      <h3>Avg Duration</h3>
+      <div class="metric-value">{{ toolUsage.avgDurationMs | number: '1.0-0' }} ms</div>
+      <p class="metric-subtitle">Average execution time</p>
+    </mat-card>
+
+    <mat-card class="metric-card\">\n      <h3>Total Cost</h3>\n      <div class="metric-value\">${{ toolUsage.totalCost | number: '1.2-2' }}</div>\n      <p class=\"metric-subtitle\">Cumulative cost</p>\n    </mat-card>\n  </div>\n\n  <div class=\"details-grid\">\n    <mat-card class=\"detail-section\">\n      <h3>Tool Information</h3>\n      <dl>\n        <dt>Tool ID</dt>\n        <dd>{{ toolUsage.id }}</dd>\n        <dt>Category</dt>\n        <dd>{{ toolUsage.category }}</dd>\n        <dt>Agent ID</dt>\n        <dd>{{ toolUsage.agentId }}</dd>\n        <dt>Agent Name</dt>\n        <dd>{{ toolUsage.agentName }}</dd>\n        <dt>First Used</dt>\n        <dd>{{ toolUsage.firstUsedAt | date: 'medium' }}</dd>\n        <dt>Last Used</dt>\n        <dd>{{ toolUsage.lastUsedAt | date: 'medium' }}</dd>\n      </dl>\n    </mat-card>\n\n    <mat-card class=\"detail-section\">\n      <h3>Performance Metrics</h3>\n      <dl>\n        <dt>Total Calls</dt>\n        <dd>{{ toolUsage.callCount }}</dd>\n        <dt>Successful</dt>\n        <dd><span class=\"success-text\">{{ toolUsage.successCount }}</span></dd>\n        <dt>Failed</dt>\n        <dd><span class=\"failure-text\">{{ toolUsage.failureCount }}</span></dd>\n        <dt>Failure Rate</dt>\n        <dd>{{ (toolUsage.failureCount / toolUsage.callCount * 100) | number: '1.1-1' }}%</dd>\n        <dt>Avg Duration</dt>\n        <dd>{{ toolUsage.avgDurationMs | number: '1.0-0' }} ms</dd>\n        <dt>Total Cost</dt>\n        <dd>${{ toolUsage.totalCost | number: '1.2-2' }}</dd>\n      </dl>\n    </mat-card>\n  </div>\n\n  <mat-card class=\"parameters-section\" *ngIf=\"toolUsage.parameters && (toolUsage.parameters | keyvalue).length > 0\">\n    <h3>Parameters</h3>\n    <pre><code>{{ toolUsage.parameters | json }}</code></pre>\n  </mat-card>\n</div>\n\n<ng-template #loading>\n  <div class=\"loading-container\">\n    <mat-spinner></mat-spinner>\n    <p>Loading tool usage details...</p>\n  </div>\n</ng-template>

@@ -1,4 +1,83 @@
-<div class="failure-details-container">
-  <h1>Failure Details</h1>
-  <p>Failure details placeholder</p>
+<div class="page-container" *ngIf="failure; else loading">
+  <button mat-icon-button (click)="goBack()" class="back-button">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  <div class="error-header">
+    <span class="severity-badge" [ngClass]="getSeverityClass()">{{ failure.severity | titlecase }}</span>
+    <h1>{{ failure.errorType }}</h1>
+    <p class="error-message">{{ failure.errorMessage }}</p>
+  </div>
+
+  <div class="details-grid">
+    <mat-card class="detail-section">
+      <h3>Error Information</h3>
+      <dl>
+        <dt>Error ID</dt>
+        <dd>{{ failure.id }}</dd>
+        <dt>Execution ID</dt>
+        <dd>{{ failure.executionId }}</dd>
+        <dt>Agent</dt>
+        <dd>{{ failure.agentName }}</dd>
+        <dt>Status Code</dt>
+        <dd>{{ failure.statusCode || 'N/A' }}</dd>
+        <dt>Occurred At</dt>
+        <dd>{{ failure.occurredAt | date: 'medium' }}</dd>
+        <dt>Occurrences</dt>
+        <dd>{{ failure.occurrenceCount || 1 }}</dd>
+      </dl>
+    </mat-card>
+
+    <mat-card class="detail-section">
+      <h3>Resolution Status</h3>
+      <form [formGroup]="resolutionForm" (ngSubmit)="saveResolution()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="unresolved">Unresolved</mat-option>
+            <mat-option value="investigating">Investigating</mat-option>
+            <mat-option value="resolved">Resolved</mat-option>
+            <mat-option value="ignored">Ignored</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notes</mat-label>
+          <textarea matInput formControlName="notes" placeholder="Add resolution notes..." rows="4"></textarea>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+          <mat-icon>save</mat-icon> Save Resolution
+        </button>
+      </form>
+    </mat-card>
+  </div>
+
+  <mat-card class="stack-trace-section" *ngIf="failure.stackTrace && failure.stackTrace.length > 0">
+    <h3>Stack Trace</h3>
+    <div class="stack-frames">
+      <div class="stack-frame" *ngFor="let frame of failure.stackTrace; let i = index" (click)="toggleStackFrame(i)">
+        <div class="frame-header" [class.expanded]="isStackFrameExpanded(i)">
+          <mat-icon>{{ isStackFrameExpanded(i) ? 'expand_less' : 'expand_more' }}</mat-icon>
+          <span class="frame-function">{{ frame.function }}</span>
+          <span class="frame-location">{{ frame.file }}:{{ frame.line }}:{{ frame.column }}</span>
+        </div>
+        <div class="frame-code" *ngIf="isStackFrameExpanded(i)">
+          <pre><code>{{ frame.code }}</code></pre>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="context-section" *ngIf="failure.context && (failure.context | keyvalue).length > 0">
+    <h3>Error Context</h3>
+    <pre><code>{{ failure.context | json }}</code></pre>
+  </mat-card>
 </div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading error details...</p>
+  </div>
+</ng-template>
