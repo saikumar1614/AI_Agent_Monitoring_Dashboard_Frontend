@@ -1,4 +1,102 @@
-<div class="analytics-container">
-  <h1>Analytics</h1>
-  <p>Analytics placeholder</p>
+<div class="latency-dashboard">
+  <div class="header-row">
+    <div>
+      <h1>Latency Dashboard</h1>
+      <p>Track end-to-end latency trends with date filters and distribution views.</p>
+    </div>
+  </div>
+
+  <mat-card class="filters-card">
+    <form [formGroup]="filterForm">
+      <div class="quick-range-row">
+        <button mat-stroked-button type="button" (click)="setQuickRange(1)">Last 24h</button>
+        <button mat-stroked-button type="button" (click)="setQuickRange(7)">Last 7d</button>
+        <button mat-stroked-button type="button" (click)="setQuickRange(30)">Last 30d</button>
+      </div>
+
+      <div class="filter-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput type="date" formControlName="fromDate">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput type="date" formControlName="toDate">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Granularity</mat-label>
+          <mat-select formControlName="granularity">
+            <mat-option value="hour">Hourly</mat-option>
+            <mat-option value="day">Daily</mat-option>
+            <mat-option value="week">Weekly</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="actions-row">
+        <button mat-raised-button color="primary" type="button" (click)="applyFilters()">
+          <mat-icon>search</mat-icon>
+          Apply Filters
+        </button>
+        <button mat-stroked-button type="button" (click)="resetFilters()">
+          <mat-icon>restart_alt</mat-icon>
+          Reset
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="summary-grid">
+    <mat-card class="summary-card">
+      <p class="label">Average</p>
+      <h3>{{ summary.averageMs | number: '1.0-0' }} ms</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">P95</p>
+      <h3>{{ summary.p95Ms | number: '1.0-0' }} ms</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">P99</p>
+      <h3>{{ summary.p99Ms | number: '1.0-0' }} ms</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Max</p>
+      <h3>{{ summary.maxMs | number: '1.0-0' }} ms</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Requests</p>
+      <h3>{{ summary.totalRequests | number }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Slow Rate</p>
+      <h3>{{ summary.slowRate | number: '1.1-1' }}%</h3>
+    </mat-card>
+  </div>
+
+  <div class="charts-grid">
+    <mat-card class="chart-card chart-wide">
+      <h3>Latency Trend</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="trendChartData" [type]="'line'" [options]="lineChartOptions"></canvas>
+      </div>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <h3>Latency by Agent</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="agentChartData" [type]="'bar'" [options]="barChartOptions"></canvas>
+      </div>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <h3>Latency by Endpoint</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="endpointChartData" [type]="'bar'" [options]="barChartOptions"></canvas>
+      </div>
+    </mat-card>
+  </div>
 </div>

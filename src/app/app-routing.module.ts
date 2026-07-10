@@ -42,7 +42,7 @@ const routes: Routes = [
   {
     path: 'analytics',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./analytics/analytics-routing.module').then(m => m.AnalyticsRoutingModule)
+    loadChildren: () => import('./analytics/analytics.module').then(m => m.AnalyticsModule)
   },
   {
     path: 'settings',
