@@ -1,4 +1,123 @@
-<div class="analytics-container">
-  <h1>Token Analytics</h1>
-  <p>Token analytics placeholder</p>
+<div class="token-dashboard">
+  <div class="header-row">
+    <div>
+      <h1>Token Analytics</h1>
+      <p>Analyze input/output token consumption, trends, and model distribution.</p>
+    </div>
+    <button *ngIf="grafanaEnabled" mat-stroked-button type="button" (click)="openGrafana()">
+      <mat-icon>open_in_new</mat-icon>
+      Open Grafana
+    </button>
+  </div>
+
+  <mat-card class="filters-card">
+    <form [formGroup]="filterForm">
+      <div class="quick-range-row">
+        <button mat-stroked-button type="button" (click)="setQuickRange(1)">Last 24h</button>
+        <button mat-stroked-button type="button" (click)="setQuickRange(7)">Last 7d</button>
+        <button mat-stroked-button type="button" (click)="setQuickRange(30)">Last 30d</button>
+      </div>
+
+      <div class="filter-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput type="date" formControlName="fromDate">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput type="date" formControlName="toDate">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Granularity</mat-label>
+          <mat-select formControlName="granularity">
+            <mat-option value="hour">Hourly</mat-option>
+            <mat-option value="day">Daily</mat-option>
+            <mat-option value="week">Weekly</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="actions-row">
+        <button mat-raised-button color="primary" type="button" (click)="applyFilters()">
+          <mat-icon>search</mat-icon>
+          Apply Filters
+        </button>
+        <button mat-stroked-button type="button" (click)="resetFilters()">
+          <mat-icon>restart_alt</mat-icon>
+          Reset
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="summary-grid">
+    <mat-card class="summary-card">
+      <p class="label">Total Tokens</p>
+      <h3>{{ summary.totalTokens | number }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Input Tokens</p>
+      <h3>{{ summary.inputTokens | number }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Output Tokens</p>
+      <h3>{{ summary.outputTokens | number }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Avg / Request</p>
+      <h3>{{ summary.averageTokensPerRequest | number: '1.0-0' }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Total Requests</p>
+      <h3>{{ summary.totalRequests | number }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Total Cost</p>
+      <h3>${{ summary.totalCost | number: '1.2-2' }}</h3>
+    </mat-card>
+  </div>
+
+  <div class="charts-grid">
+    <mat-card class="chart-card chart-wide">
+      <h3>Token Trend</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="trendChartData" [type]="'line'" [options]="lineChartOptions"></canvas>
+      </div>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <h3>Tokens by Agent</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="agentChartData" [type]="'bar'" [options]="barChartOptions"></canvas>
+      </div>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <h3>Token Share by Model</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="modelChartData" [type]="'doughnut'" [options]="doughnutChartOptions"></canvas>
+      </div>
+    </mat-card>
+  </div>
+
+  <div *ngIf="grafanaEnabled" class="grafana-grid">
+    <mat-card class="grafana-card">
+      <h3>Grafana Token Overview</h3>
+      <iframe *ngIf="grafanaOverviewUrl" [src]="grafanaOverviewUrl" loading="lazy" title="Grafana Token Overview"></iframe>
+    </mat-card>
+
+    <mat-card class="grafana-card">
+      <h3>Grafana Token Requests</h3>
+      <iframe *ngIf="grafanaRequestsUrl" [src]="grafanaRequestsUrl" loading="lazy" title="Grafana Token Requests"></iframe>
+    </mat-card>
+  </div>
+
+  <mat-card *ngIf="!grafanaEnabled" class="grafana-disabled-note">
+    <h3>Grafana Integration Disabled</h3>
+    <p>Set <strong>environment.grafana.enabled</strong> and configure dashboard settings to enable embedded panels.</p>
+  </mat-card>
 </div>

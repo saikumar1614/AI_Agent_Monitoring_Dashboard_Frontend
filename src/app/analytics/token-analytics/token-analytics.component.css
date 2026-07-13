@@ -1,0 +1,152 @@
+.token-dashboard {
+	padding: 24px;
+	max-width: 1400px;
+	margin: 0 auto;
+	display: grid;
+	gap: 18px;
+}
+
+.header-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.header-row h1 {
+	margin: 0;
+	font-size: 32px;
+	color: #004d40;
+}
+
+.header-row p {
+	margin: 8px 0 0;
+	color: #546e7a;
+}
+
+.filters-card {
+	padding: 16px;
+}
+
+.quick-range-row {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	margin-bottom: 14px;
+}
+
+.filter-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 12px;
+}
+
+.actions-row {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+.summary-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 12px;
+}
+
+.summary-card {
+	border-left: 4px solid #00695c;
+}
+
+.summary-card .label {
+	margin: 0;
+	color: #607d8b;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+}
+
+.summary-card h3 {
+	margin: 8px 0 0;
+	font-size: 24px;
+}
+
+.charts-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.chart-card {
+	padding: 12px;
+}
+
+.chart-card h3 {
+	margin: 0 0 12px;
+	font-size: 16px;
+	color: #263238;
+}
+
+.chart-wide {
+	grid-column: 1 / -1;
+}
+
+.chart-wrap {
+	position: relative;
+	height: 320px;
+}
+
+.grafana-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.grafana-card {
+	padding: 12px;
+}
+
+.grafana-card h3 {
+	margin: 0 0 10px;
+	font-size: 16px;
+	color: #263238;
+}
+
+.grafana-card iframe {
+	width: 100%;
+	height: 320px;
+	border: 1px solid #d7dee3;
+	border-radius: 8px;
+	background: #fff;
+}
+
+.grafana-disabled-note {
+	padding: 12px;
+}
+
+.grafana-disabled-note h3 {
+	margin: 0 0 8px;
+}
+
+.grafana-disabled-note p {
+	margin: 0;
+	color: #546e7a;
+}
+
+@media (max-width: 1000px) {
+	.charts-grid,
+	.grafana-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 900px) {
+	.token-dashboard {
+		padding: 14px;
+	}
+
+	.chart-wrap,
+	.grafana-card iframe {
+		height: 280px;
+	}
+}

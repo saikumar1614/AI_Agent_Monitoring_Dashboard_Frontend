@@ -78,5 +78,15 @@ export const environment = {
   logging: {
     enabled: false,
     level: 'error'
+  },
+
+  // Grafana Integration
+  grafana: {
+    enabled: true,
+    baseUrl: 'https://grafana.example.com',
+    orgId: 1,
+    tokenDashboardUid: 'token-analytics',
+    tokenOverviewPanelId: 2,
+    tokenRequestsPanelId: 4
   }
 };
