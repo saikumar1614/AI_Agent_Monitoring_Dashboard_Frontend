@@ -95,6 +95,17 @@
 	margin-right: 6px;
 }
 
+.cost-btn {
+	align-self: flex-start;
+	border-color: rgba(253, 230, 138, 0.6) !important;
+	color: #fef3c7 !important;
+	background: rgba(245, 158, 11, 0.15);
+}
+
+.cost-btn mat-icon {
+	margin-right: 6px;
+}
+
 .error-banner {
 	margin-top: 12px;
 	display: flex;

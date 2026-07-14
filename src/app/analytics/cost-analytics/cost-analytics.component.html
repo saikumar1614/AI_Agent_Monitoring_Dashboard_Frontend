@@ -1,4 +1,102 @@
-<div class="analytics-container">
-  <h1>Cost Analytics</h1>
-  <p>Cost analytics placeholder</p>
+<div class="cost-dashboard">
+  <div class="header-row">
+    <div>
+      <h1>Cost Dashboard</h1>
+      <p>Monitor spend trends, top cost drivers, and request economics.</p>
+    </div>
+  </div>
+
+  <mat-card class="filters-card">
+    <form [formGroup]="filterForm">
+      <div class="quick-range-row">
+        <button mat-stroked-button type="button" (click)="setQuickRange(1)">Last 24h</button>
+        <button mat-stroked-button type="button" (click)="setQuickRange(7)">Last 7d</button>
+        <button mat-stroked-button type="button" (click)="setQuickRange(30)">Last 30d</button>
+      </div>
+
+      <div class="filter-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>From Date</mat-label>
+          <input matInput type="date" formControlName="fromDate">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>To Date</mat-label>
+          <input matInput type="date" formControlName="toDate">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Granularity</mat-label>
+          <mat-select formControlName="granularity">
+            <mat-option value="hour">Hourly</mat-option>
+            <mat-option value="day">Daily</mat-option>
+            <mat-option value="week">Weekly</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="actions-row">
+        <button mat-raised-button color="primary" type="button" (click)="applyFilters()">
+          <mat-icon>search</mat-icon>
+          Apply Filters
+        </button>
+        <button mat-stroked-button type="button" (click)="resetFilters()">
+          <mat-icon>restart_alt</mat-icon>
+          Reset
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="summary-grid">
+    <mat-card class="summary-card">
+      <p class="label">Total Cost</p>
+      <h3>${{ summary.totalCost | number: '1.2-2' }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Avg / Request</p>
+      <h3>${{ summary.averageCostPerRequest | number: '1.2-4' }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Total Requests</p>
+      <h3>{{ summary.totalRequests | number }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Total Tokens</p>
+      <h3>{{ summary.totalTokens | number }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Highest Execution</p>
+      <h3>${{ summary.highestSingleExecutionCost | number: '1.2-4' }}</h3>
+    </mat-card>
+    <mat-card class="summary-card">
+      <p class="label">Variance</p>
+      <h3>{{ summary.costVariancePercent | number: '1.1-1' }}%</h3>
+    </mat-card>
+  </div>
+
+  <div class="charts-grid">
+    <mat-card class="chart-card chart-wide">
+      <h3>Cost Trend</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="trendChartData" [type]="'line'" [options]="lineChartOptions"></canvas>
+      </div>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <h3>Cost by Agent</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="agentChartData" [type]="'bar'" [options]="barChartOptions"></canvas>
+      </div>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <h3>Cost by Category</h3>
+      <div class="chart-wrap">
+        <canvas baseChart [data]="categoryChartData" [type]="'doughnut'" [options]="doughnutChartOptions"></canvas>
+      </div>
+    </mat-card>
+  </div>
 </div>

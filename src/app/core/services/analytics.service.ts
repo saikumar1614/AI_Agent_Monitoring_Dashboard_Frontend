@@ -3,6 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
+	CostAnalyticsResponse,
+	CostFilters,
 	LatencyAnalyticsResponse,
 	LatencyFilters,
 	TokenAnalyticsResponse,
@@ -45,5 +47,20 @@ export class AnalyticsService {
 
 		const url = `${this.baseUrl}${environment.endpoints.analytics.tokens}`;
 		return this.http.get<TokenAnalyticsResponse>(url, { params });
+	}
+
+	getCostAnalytics(filters?: CostFilters): Observable<CostAnalyticsResponse> {
+		let params = new HttpParams();
+
+		if (filters) {
+			Object.entries(filters).forEach(([key, value]) => {
+				if (value !== undefined && value !== null && value !== '') {
+					params = params.set(key, String(value));
+				}
+			});
+		}
+
+		const url = `${this.baseUrl}${environment.endpoints.analytics.cost}`;
+		return this.http.get<CostAnalyticsResponse>(url, { params });
 	}
 }

@@ -3,6 +3,7 @@ import { ChartConfiguration } from 'chart.js';
 import { Subscription, forkJoin, interval, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import {
   DashboardAlert,
   DashboardKpi,
@@ -200,7 +201,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private dashboardService: DashboardService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -214,6 +216,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   refreshDashboard(): void {
     this.loadDashboardData(true);
+  }
+
+  openCostDashboard(): void {
+    this.router.navigate(['/analytics/cost']);
   }
 
   onAutoRefreshToggle(enabled: boolean): void {

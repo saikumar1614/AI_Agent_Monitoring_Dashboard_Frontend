@@ -91,3 +91,47 @@ export interface TokenAnalyticsResponse {
 	byAgent: TokenByAgent[];
 	byModel: TokenByModel[];
 }
+
+export interface CostFilters {
+	fromDate?: string;
+	toDate?: string;
+	granularity?: 'hour' | 'day' | 'week';
+	agentId?: string;
+}
+
+export interface CostSummary {
+	totalCost: number;
+	averageCostPerRequest: number;
+	totalRequests: number;
+	totalTokens: number;
+	highestSingleExecutionCost: number;
+	costVariancePercent: number;
+}
+
+export interface CostTrendPoint {
+	timestamp: string;
+	cost: number;
+	requestCount: number;
+	tokenCount: number;
+}
+
+export interface CostByAgent {
+	agentId: string;
+	agentName: string;
+	cost: number;
+	requestCount: number;
+	tokenCount: number;
+}
+
+export interface CostByCategory {
+	category: string;
+	cost: number;
+	percentage: number;
+}
+
+export interface CostAnalyticsResponse {
+	summary: CostSummary;
+	trend: CostTrendPoint[];
+	byAgent: CostByAgent[];
+	byCategory: CostByCategory[];
+}

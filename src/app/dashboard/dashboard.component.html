@@ -34,6 +34,11 @@
       <mat-icon>refresh</mat-icon>
       Refresh Data
     </button>
+
+    <button mat-stroked-button class="cost-btn" (click)="openCostDashboard()">
+      <mat-icon>paid</mat-icon>
+      Open Cost Dashboard
+    </button>
   </section>
 
   <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
