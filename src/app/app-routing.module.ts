@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
@@ -10,24 +10,22 @@ const routes: Routes = [
   },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth-routing.module').then(m => m.AuthRoutingModule)
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   },
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./dashboard/dashboard.component').then(m => ({
-      default: m.DashboardComponent
-    }))
+    loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
     path: 'agents',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./agents/agents-routing.module').then(m => m.AgentsRoutingModule)
+    loadChildren: () => import('./agents/agents.module').then(m => m.AgentsModule)
   },
   {
     path: 'executions',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./executions/executions-routing.module').then(m => m.ExecutionsRoutingModule)
+    loadChildren: () => import('./executions/executions.module').then(m => m.ExecutionsModule)
   },
   {
     path: 'tool-usage',
@@ -47,9 +45,7 @@ const routes: Routes = [
   {
     path: 'settings',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./settings/settings.component').then(m => ({
-      default: m.SettingsComponent
-    }))
+    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
   },
   {
     path: '**',
@@ -60,7 +56,8 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     enableTracing: false,
-    useHash: false
+    useHash: false,
+    preloadingStrategy: PreloadAllModules
   })],
   exports: [RouterModule]
 })

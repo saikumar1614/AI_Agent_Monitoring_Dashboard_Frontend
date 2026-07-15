@@ -50,7 +50,7 @@
 
   <section class="kpi-grid">
     <app-kpi-card
-      *ngFor="let card of kpiCards"
+      *ngFor="let card of kpiCards; trackBy: trackByKpi"
       [title]="card.title"
       [value]="card.value"
       [change]="card.change"
@@ -62,7 +62,7 @@
   </section>
 
   <section class="summary-grid">
-    <mat-card class="summary-card" *ngFor="let item of summaryItems" [ngClass]="'tone-' + item.tone">
+    <mat-card class="summary-card" *ngFor="let item of summaryItems; trackBy: trackBySummary" [ngClass]="'tone-' + item.tone">
       <p class="summary-title">{{ item.title }}</p>
       <h3 class="summary-value">{{ item.value }}</h3>
       <p class="summary-hint">{{ item.hint }}</p>
@@ -100,7 +100,7 @@
         <p>Live queue snapshot</p>
       </div>
       <div class="execution-list">
-        <div class="execution-item" *ngFor="let execution of recentExecutions">
+        <div class="execution-item" *ngFor="let execution of recentExecutions; trackBy: trackByExecution">
           <div>
             <p class="execution-id">{{ execution.id }}</p>
             <p class="execution-agent">{{ execution.agentName }}</p>
@@ -118,7 +118,7 @@
         <p>Action required</p>
       </div>
       <div class="alert-list">
-        <div class="alert-item" *ngFor="let alert of alerts" [ngClass]="getAlertSeverityClass(alert.severity)">
+        <div class="alert-item" *ngFor="let alert of alerts; trackBy: trackByAlert" [ngClass]="getAlertSeverityClass(alert.severity)">
           <p class="alert-title">{{ alert.title }}</p>
           <p class="alert-description">{{ alert.description }}</p>
           <span class="alert-time">{{ alert.timestamp }}</span>

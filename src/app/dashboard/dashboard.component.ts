@@ -1,4 +1,4 @@
-﻿import { Component, OnDestroy, OnInit } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ChartConfiguration } from 'chart.js';
 import { Subscription, forkJoin, interval, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -34,7 +34,8 @@ interface DashboardSummaryItem {
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   readonly currentDate = new Date();
@@ -249,6 +250,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getAlertSeverityClass(severity: string): string {
     return `severity-${severity}`;
+  }
+
+  trackByKpi(index: number, item: KpiCard): string {
+    return item.title;
+  }
+
+  trackBySummary(index: number, item: DashboardSummaryItem): string {
+    return item.title;
+  }
+
+  trackByExecution(index: number, item: DashboardRecentExecution): string {
+    return item.id;
+  }
+
+  trackByAlert(index: number, item: DashboardAlert): string {
+    return `${item.title}-${item.timestamp}`;
   }
 
   getExecutionDuration(execution: DashboardRecentExecution): string {

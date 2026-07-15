@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,7 +15,8 @@ import { AnalyticsService } from '../../core/services/analytics.service';
 @Component({
   selector: 'app-latency-analytics',
   templateUrl: './latency-analytics.component.html',
-  styleUrls: ['./latency-analytics.component.css']
+  styleUrls: ['./latency-analytics.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LatencyAnalyticsComponent implements OnInit {
   isLoading = false;

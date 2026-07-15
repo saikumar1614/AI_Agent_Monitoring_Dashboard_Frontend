@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
@@ -17,7 +17,8 @@ import { AnalyticsService } from '../../core/services/analytics.service';
 @Component({
   selector: 'app-token-analytics',
   templateUrl: './token-analytics.component.html',
-  styleUrls: ['./token-analytics.component.css']
+  styleUrls: ['./token-analytics.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokenAnalyticsComponent implements OnInit {
   isLoading = false;
