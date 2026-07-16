@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "Angular frontend for AI Agent Monitoring Dashboard",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "lint": "ng lint",
-    "serve": "ng serve --open",
-    "build:prod": "ng build --configuration production --source-map=false --named-chunks=false --vendor-chunk=false",
-    "build:stats": "ng build --configuration production --stats-json"
+    "ng": "npx ng",
+    "start": "npx ng serve",
+    "start:staging": "npx ng serve --configuration staging",
+    "start:prod": "npx ng serve --configuration production",
+    "build": "npx ng build",
+    "watch": "npx ng build --watch --configuration development",
+    "test": "npx ng test",
+    "lint": "npx ng lint",
+    "serve": "npx ng serve --open",
+    "build:staging": "npx ng build --configuration staging",
+    "build:prod": "npx ng build --configuration production --source-map=false --named-chunks=false --vendor-chunk=false",
+    "build:stats": "npx ng build --configuration production --stats-json"
   },
   "private": true,
   "dependencies": {
