@@ -1,5 +1,6 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
 import { ToolUsage, ToolUsageFilters } from '../../core/models/tool-usage.model';
 import { ToolUsageService } from '../../core/services/tool-usage.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -67,14 +68,9 @@ export class ToolUsageListComponent implements OnInit {
     this.loadToolUsages();
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page + 1;
-    this.loadToolUsages();
-  }
-
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
     this.loadToolUsages();
   }
 

@@ -1,1 +1,47 @@
-import { NgModule } from '@angular/core';\nimport { CommonModule } from '@angular/common';\nimport { ReactiveFormsModule } from '@angular/forms';\nimport { FailuresRoutingModule } from './failures-routing.module';\nimport { FailureListComponent } from './failure-list/failure-list.component';\nimport { FailureDetailsComponent } from './failure-details/failure-details.component';\n\n// Material\nimport { MatTableModule } from '@angular/material/table';\nimport { MatPaginatorModule } from '@angular/material/paginator';\nimport { MatCardModule } from '@angular/material/card';\nimport { MatFormFieldModule } from '@angular/material/form-field';\nimport { MatInputModule } from '@angular/material/input';\nimport { MatSelectModule } from '@angular/material/select';\nimport { MatButtonModule } from '@angular/material/button';\nimport { MatIconModule } from '@angular/material/icon';\nimport { MatProgressBarModule } from '@angular/material/progress-bar';\nimport { MatTooltipModule } from '@angular/material/tooltip';\nimport { MatDatepickerModule } from '@angular/material/datepicker';\nimport { MatNativeDateModule } from '@angular/material/core';\nimport { MatProgressSpinnerModule } from '@angular/material/progress-spinner';\n\n@NgModule({\n  declarations: [\n    FailureListComponent,\n    FailureDetailsComponent\n  ],\n  imports: [\n    CommonModule,\n    ReactiveFormsModule,\n    FailuresRoutingModule,\n    MatTableModule,\n    MatPaginatorModule,\n    MatCardModule,\n    MatFormFieldModule,\n    MatInputModule,\n    MatSelectModule,\n    MatButtonModule,\n    MatIconModule,\n    MatProgressBarModule,\n    MatTooltipModule,\n    MatDatepickerModule,\n    MatNativeDateModule,\n    MatProgressSpinnerModule\n  ]\n})\nexport class FailuresModule { }\n
+﻿import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FailuresRoutingModule } from './failures-routing.module';
+import { FailureListComponent } from './failure-list/failure-list.component';
+import { FailureDetailsComponent } from './failure-details/failure-details.component';
+
+// Material
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+@NgModule({
+  declarations: [
+    FailureListComponent,
+    FailureDetailsComponent
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FailuresRoutingModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule
+  ]
+})
+export class FailuresModule { }

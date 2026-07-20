@@ -1,5 +1,6 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
 import { Failure, FailureFilters, FailureAnalytics, FailureSeverity } from '../../core/models/failure.model';
 import { FailureService } from '../../core/services/failure.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -78,14 +79,9 @@ export class FailureListComponent implements OnInit {
     this.loadFailures();
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page + 1;
-    this.loadFailures();
-  }
-
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
     this.loadFailures();
   }
 

@@ -27,4 +27,60 @@
       <p class="metric-subtitle">Average execution time</p>
     </mat-card>
 
-    <mat-card class="metric-card\">\n      <h3>Total Cost</h3>\n      <div class="metric-value\">${{ toolUsage.totalCost | number: '1.2-2' }}</div>\n      <p class=\"metric-subtitle\">Cumulative cost</p>\n    </mat-card>\n  </div>\n\n  <div class=\"details-grid\">\n    <mat-card class=\"detail-section\">\n      <h3>Tool Information</h3>\n      <dl>\n        <dt>Tool ID</dt>\n        <dd>{{ toolUsage.id }}</dd>\n        <dt>Category</dt>\n        <dd>{{ toolUsage.category }}</dd>\n        <dt>Agent ID</dt>\n        <dd>{{ toolUsage.agentId }}</dd>\n        <dt>Agent Name</dt>\n        <dd>{{ toolUsage.agentName }}</dd>\n        <dt>First Used</dt>\n        <dd>{{ toolUsage.firstUsedAt | date: 'medium' }}</dd>\n        <dt>Last Used</dt>\n        <dd>{{ toolUsage.lastUsedAt | date: 'medium' }}</dd>\n      </dl>\n    </mat-card>\n\n    <mat-card class=\"detail-section\">\n      <h3>Performance Metrics</h3>\n      <dl>\n        <dt>Total Calls</dt>\n        <dd>{{ toolUsage.callCount }}</dd>\n        <dt>Successful</dt>\n        <dd><span class=\"success-text\">{{ toolUsage.successCount }}</span></dd>\n        <dt>Failed</dt>\n        <dd><span class=\"failure-text\">{{ toolUsage.failureCount }}</span></dd>\n        <dt>Failure Rate</dt>\n        <dd>{{ (toolUsage.failureCount / toolUsage.callCount * 100) | number: '1.1-1' }}%</dd>\n        <dt>Avg Duration</dt>\n        <dd>{{ toolUsage.avgDurationMs | number: '1.0-0' }} ms</dd>\n        <dt>Total Cost</dt>\n        <dd>${{ toolUsage.totalCost | number: '1.2-2' }}</dd>\n      </dl>\n    </mat-card>\n  </div>\n\n  <mat-card class=\"parameters-section\" *ngIf=\"toolUsage.parameters && (toolUsage.parameters | keyvalue).length > 0\">\n    <h3>Parameters</h3>\n    <pre><code>{{ toolUsage.parameters | json }}</code></pre>\n  </mat-card>\n</div>\n\n<ng-template #loading>\n  <div class=\"loading-container\">\n    <mat-spinner></mat-spinner>\n    <p>Loading tool usage details...</p>\n  </div>\n</ng-template>
+    <mat-card class="metric-card">
+      <h3>Total Cost</h3>
+      <div class="metric-value">${{ toolUsage.totalCost | number: '1.2-2' }}</div>
+      <p class="metric-subtitle">Cumulative cost</p>
+    </mat-card>
+  </div>
+
+  <div class="details-grid">
+    <mat-card class="detail-section">
+      <h3>Tool Information</h3>
+      <dl>
+        <dt>Tool ID</dt>
+        <dd>{{ toolUsage.id }}</dd>
+        <dt>Category</dt>
+        <dd>{{ toolUsage.category }}</dd>
+        <dt>Agent ID</dt>
+        <dd>{{ toolUsage.agentId }}</dd>
+        <dt>Agent Name</dt>
+        <dd>{{ toolUsage.agentName }}</dd>
+        <dt>First Used</dt>
+        <dd>{{ toolUsage.firstUsedAt | date: 'medium' }}</dd>
+        <dt>Last Used</dt>
+        <dd>{{ toolUsage.lastUsedAt | date: 'medium' }}</dd>
+      </dl>
+    </mat-card>
+
+    <mat-card class="detail-section">
+      <h3>Performance Metrics</h3>
+      <dl>
+        <dt>Total Calls</dt>
+        <dd>{{ toolUsage.callCount }}</dd>
+        <dt>Successful</dt>
+        <dd><span class="success-text">{{ toolUsage.successCount }}</span></dd>
+        <dt>Failed</dt>
+        <dd><span class="failure-text">{{ toolUsage.failureCount }}</span></dd>
+        <dt>Failure Rate</dt>
+        <dd>{{ (toolUsage.failureCount / toolUsage.callCount * 100) | number: '1.1-1' }}%</dd>
+        <dt>Avg Duration</dt>
+        <dd>{{ toolUsage.avgDurationMs | number: '1.0-0' }} ms</dd>
+        <dt>Total Cost</dt>
+        <dd>${{ toolUsage.totalCost | number: '1.2-2' }}</dd>
+      </dl>
+    </mat-card>
+  </div>
+
+  <mat-card class="parameters-section" *ngIf="toolUsage.parameters && (toolUsage.parameters | keyvalue).length > 0">
+    <h3>Parameters</h3>
+    <pre><code>{{ toolUsage.parameters | json }}</code></pre>
+  </mat-card>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading tool usage details...</p>
+  </div>
+</ng-template>
